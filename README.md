@@ -39,4 +39,4 @@ $ terraform plan
 $ terraform apply
 ```
 
-You should now have a fully working environment with everything described in the beginning for this README.
+You should now have a fully working environment with everything described in the beginning of this README.
