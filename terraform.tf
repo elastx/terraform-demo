@@ -29,7 +29,7 @@ provider "openstack" {
 ### [General setup] ###
 
 resource "openstack_networking_router_v2" "router" {
-  name = "wk-router"
+  name = "demo-router"
   admin_state_up = "true"
   external_gateway = "62954df1-05bb-42e5-9960-ca921cccaeeb"
 }
@@ -43,7 +43,7 @@ resource "openstack_compute_keypair_v2" "demo_keypair" {
 ### this is only for demonstrational purposes.
 
 resource "openstack_compute_secgroup_v2" "ssh_sg" {
-  name = "wk-ssh-sg"
+  name = "demo-ssh-sg"
   description = "ssh security group"
   rule {
     from_port = 22
@@ -54,7 +54,7 @@ resource "openstack_compute_secgroup_v2" "ssh_sg" {
 }
 
 resource "openstack_compute_secgroup_v2" "web_sg" {
-  name = "wk-web-sg"
+  name = "demo-web-sg"
   description = "web security group"
   rule {
     from_port = 80
@@ -71,7 +71,7 @@ resource "openstack_compute_secgroup_v2" "web_sg" {
 }
 
 resource "openstack_compute_secgroup_v2" "db_sg" {
-  name = "wk-db-sg"
+  name = "demo-db-sg"
   description = "db security group"
   rule {
     from_port = 3306
@@ -81,17 +81,15 @@ resource "openstack_compute_secgroup_v2" "db_sg" {
   }
 }
 
-
-
 ### [Web networking] ###
 
 resource "openstack_networking_network_v2" "web_net" {
-  name = "wk-web-net"
+  name = "demo-web-net"
   admin_state_up = "true"
 }
 
 resource "openstack_networking_subnet_v2" "web_subnet" {
-  name = "wk-web-subnet"
+  name = "demo-web-subnet"
   network_id = "${openstack_networking_network_v2.web_net.id}"
   cidr = "10.0.0.0/24"
   ip_version = 4
@@ -112,12 +110,12 @@ resource "openstack_compute_floatingip_v2" "fip" {
 ### [Web instances] ###
 
 resource "openstack_compute_servergroup_v2" "web_srvgrp" {
-  name = "wk-web-srvgrp"
+  name = "demo-web-srvgrp"
   policies = ["anti-affinity"]
 }
 
 resource "openstack_compute_instance_v2" "web_cluster" {
-  name = "wk-web-${count.index+1}"
+  name = "demo-web-${count.index+1}"
   count = "2"
   image_name = "centos-7-1511"
   flavor_name = "m1.tiny"
@@ -140,12 +138,12 @@ output "web-instances" {
 ### [DB networking] ###
 
 resource "openstack_networking_network_v2" "db_net" {
-  name = "wk-db-net"
+  name = "demo-db-net"
   admin_state_up = "true"
 }
 
 resource "openstack_networking_subnet_v2" "db_subnet" {
-  name = "wk-db-subnet"
+  name = "demo-db-subnet"
   network_id = "${openstack_networking_network_v2.db_net.id}"
   cidr = "10.0.1.0/24"
   ip_version = 4
@@ -161,12 +159,12 @@ resource "openstack_networking_router_interface_v2" "db-ext-interface" {
 ### [DB instances] ###
 
 resource "openstack_compute_servergroup_v2" "db_srvgrp" {
-  name = "wk-db-srvgrp"
+  name = "demo-db-srvgrp"
   policies = ["anti-affinity"]
 }
 
 resource "openstack_compute_instance_v2" "db_cluster" {
-  name = "wk-db-${count.index+1}"
+  name = "demo-db-${count.index+1}"
   count = "2"
   image_name = "centos-7-1511"
   flavor_name = "m1.tiny"
