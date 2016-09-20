@@ -9,7 +9,7 @@ This is just a quickstart for using terraform on Elastx. It creates:
 4 | instances, 2 web, 2 db
 2 | floating IPs for web cluster
 2 | Server Groups with anti-affiniy (web, db) makes sure instances aren't on same physical hardware
-3 | Security Groups "wk-ssh-sg", "wk-web-sg" and "wk-db-sg"
+3 | Security Groups "demo-ssh-sg", "demo-web-sg" and "demo-db-sg"
 1 | Key pair "demo\_rsa"
 
 Default user is changed to "elastx" with cloud-config.
