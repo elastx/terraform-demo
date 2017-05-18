@@ -23,7 +23,7 @@ provider "openstack" {
   user_name = "${var.user_name}"
   tenant_name = "${var.tenant_name}"
   password = "${var.password}"
-  auth_url = "https://ops.elastx.net:5000/v2.0"
+  auth_url = "https://ops.elastx.cloud:5000/v2.0"
 }
 
 ### [General setup] ###
