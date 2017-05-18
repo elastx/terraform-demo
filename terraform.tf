@@ -117,12 +117,11 @@ resource "openstack_compute_servergroup_v2" "web_srvgrp" {
 resource "openstack_compute_instance_v2" "web_cluster" {
   name = "demo-web-${count.index+1}"
   count = "2"
-  image_name = "centos-7-1511"
+  image_name = "centos-7-1701"
   flavor_name = "m1.tiny"
   network = { 
     uuid = "${openstack_networking_network_v2.web_net.id}"
   }
-  floating_ip = "${element(openstack_compute_floatingip_v2.fip.*.address, count.index)}"
   key_pair = "${openstack_compute_keypair_v2.demo_keypair.name}"
   scheduler_hints {
     group = "${openstack_compute_servergroup_v2.web_srvgrp.id}"
@@ -131,8 +130,14 @@ resource "openstack_compute_instance_v2" "web_cluster" {
   user_data = "${var.cloudconfig_default_user}"
 }
 
+resource "openstack_compute_floatingip_associate_v2" "fip_assoc" {
+  count = "2"
+  floating_ip = "${element(openstack_compute_floatingip_v2.fip.*.address, count.index)}"
+  instance_id = "${element(openstack_compute_instance_v2.web_cluster.*.id, count.index)}"
+}
+
 output "web-instances" {
-  value = "${join( "," , openstack_compute_instance_v2.web_cluster.*.floating_ip ) }"
+  value = "${join(",", openstack_compute_floatingip_associate_v2.fip_assoc.*.floating_ip)}"
 }
 
 ### [DB networking] ###
@@ -166,7 +171,7 @@ resource "openstack_compute_servergroup_v2" "db_srvgrp" {
 resource "openstack_compute_instance_v2" "db_cluster" {
   name = "demo-db-${count.index+1}"
   count = "2"
-  image_name = "centos-7-1511"
+  image_name = "centos-7-1701"
   flavor_name = "m1.tiny"
   network = { 
     uuid = "${openstack_networking_network_v2.db_net.id}"
