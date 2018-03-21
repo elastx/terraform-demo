@@ -6,13 +6,26 @@ variable "user_name" {}
 variable "tenant_name" {}
 
 # A little bit hackish, but for demo purposes; why not
-variable "cloudconfig_default_user" {
+variable "cloudconfig_web" {
   type = "string"
   default = <<EOF
 #cloud-config
 system_info:
   default_user:
     name: elastx
+packages:
+ - nginx
+EOF
+}
+variable "cloudconfig_db" {
+  type = "string"
+  default = <<EOF
+#cloud-config
+system_info:
+  default_user:
+    name: elastx
+packages:
+ - mysql-server
 EOF
 }
 
@@ -117,7 +130,7 @@ resource "openstack_compute_servergroup_v2" "web_srvgrp" {
 resource "openstack_compute_instance_v2" "web_cluster" {
   name = "demo-web-${count.index+1}"
   count = "2"
-  image_name = "centos-7-1701"
+  image_name = "ubuntu-16.04-server-latest"
   flavor_name = "m1.tiny"
   network = { 
     uuid = "${openstack_networking_network_v2.web_net.id}"
@@ -127,7 +140,7 @@ resource "openstack_compute_instance_v2" "web_cluster" {
     group = "${openstack_compute_servergroup_v2.web_srvgrp.id}"
   }
   security_groups = ["${openstack_compute_secgroup_v2.ssh_sg.name}","${openstack_compute_secgroup_v2.web_sg.name}"]
-  user_data = "${var.cloudconfig_default_user}"
+  user_data = "${var.cloudconfig_web}"
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip_assoc" {
@@ -171,7 +184,7 @@ resource "openstack_compute_servergroup_v2" "db_srvgrp" {
 resource "openstack_compute_instance_v2" "db_cluster" {
   name = "demo-db-${count.index+1}"
   count = "2"
-  image_name = "centos-7-1701"
+  image_name = "ubuntu-16.04-server-latest"
   flavor_name = "m1.tiny"
   network = { 
     uuid = "${openstack_networking_network_v2.db_net.id}"
@@ -181,7 +194,7 @@ resource "openstack_compute_instance_v2" "db_cluster" {
     group = "${openstack_compute_servergroup_v2.db_srvgrp.id}"
   }
   security_groups = ["${openstack_compute_secgroup_v2.ssh_sg.name}","${openstack_compute_secgroup_v2.db_sg.name}"]
-  user_data = "${var.cloudconfig_default_user}"
+  user_data = "${var.cloudconfig_db}"
 }
 
 output "db-instances" {
