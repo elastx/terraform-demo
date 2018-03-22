@@ -35,6 +35,7 @@ Last, "terraform apply" will install
 ```bash
 $ . ./terraform-openrc.sh
 [...]
+$ terraform init (if it is the first time you run terraform)
 $ terraform plan
 $ terraform apply
 ```
