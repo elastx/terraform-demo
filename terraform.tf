@@ -4,6 +4,11 @@
 variable "password" {}
 variable "user_name" {}
 variable "tenant_name" {}
+variable "az_list" {
+  description = "List of Availability Zones available in your OpenStack cluster"
+  type = "list"
+  default = ["sto1", "sto2", "sto3"]
+}
 
 # A little bit hackish, but for demo purposes; why not
 variable "cloudconfig_web" {
@@ -130,6 +135,7 @@ resource "openstack_compute_servergroup_v2" "web_srvgrp" {
 resource "openstack_compute_instance_v2" "web_cluster" {
   name = "demo-web-${count.index+1}"
   count = "2"
+  availability_zone = "${element(var.az_list, count.index)}"
   image_name = "ubuntu-16.04-server-latest"
   flavor_name = "v1-mini-1"
   network = { 
@@ -184,6 +190,7 @@ resource "openstack_compute_servergroup_v2" "db_srvgrp" {
 resource "openstack_compute_instance_v2" "db_cluster" {
   name = "demo-db-${count.index+1}"
   count = "2"
+  availability_zone = "${element(var.az_list, count.index)}"
   image_name = "ubuntu-16.04-server-latest"
   flavor_name = "v1-mini-1"
   network = { 
