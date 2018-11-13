@@ -44,7 +44,7 @@ provider "openstack" {
 resource "openstack_networking_router_v2" "router" {
   name = "demo-router"
   admin_state_up = "true"
-  external_gateway = "62954df1-05bb-42e5-9960-ca921cccaeeb"
+  external_gateway = "600b8501-78cb-4155-9c9f-23dfcba88828"
 }
 
 resource "openstack_compute_keypair_v2" "demo_keypair" {
@@ -117,7 +117,7 @@ resource "openstack_networking_router_interface_v2" "web-ext-interface" {
 
 resource "openstack_compute_floatingip_v2" "fip" {
   count = "2"
-  pool = "ext-net-01"
+  pool = "elx-public1"
 }
 
 ### [Web instances] ###
@@ -131,7 +131,7 @@ resource "openstack_compute_instance_v2" "web_cluster" {
   name = "demo-web-${count.index+1}"
   count = "2"
   image_name = "ubuntu-16.04-server-latest"
-  flavor_name = "m1.tiny"
+  flavor_name = "v1-mini-1"
   network = { 
     uuid = "${openstack_networking_network_v2.web_net.id}"
   }
@@ -185,7 +185,7 @@ resource "openstack_compute_instance_v2" "db_cluster" {
   name = "demo-db-${count.index+1}"
   count = "2"
   image_name = "ubuntu-16.04-server-latest"
-  flavor_name = "m1.tiny"
+  flavor_name = "v1-mini-1"
   network = { 
     uuid = "${openstack_networking_network_v2.db_net.id}"
   }
