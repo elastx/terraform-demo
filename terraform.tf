@@ -148,8 +148,8 @@ resource "openstack_compute_instance_v2" "web_cluster" {
   name = "demo-web-${count.index+1}"
   count = "2"
   availability_zone = element(var.az_list, count.index)
-  image_name = "ubuntu-16.04-server-latest"
-  flavor_name = "v1-mini-1"
+  image_name = "ubuntu-22.04-server-latest"
+  flavor_name = "v1-c1-m1-d20"
   network  { 
     uuid = openstack_networking_network_v2.web_net.id
   }
@@ -204,8 +204,8 @@ resource "openstack_compute_instance_v2" "db_cluster" {
   name = "demo-db-${count.index+1}"
   count = "2"
   availability_zone = element(var.az_list, count.index)
-  image_name = "ubuntu-16.04-server-latest"
-  flavor_name = "v1-mini-1"
+  image_name = "ubuntu-22.04-server-latest"
+  flavor_name = "v1-c1-m1-d20"
   network  { 
     uuid = openstack_networking_network_v2.db_net.id
   }
